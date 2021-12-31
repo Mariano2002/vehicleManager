@@ -1,0 +1,364 @@
+{%  load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Vehicle</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+</head>
+<body style="background: #56baed;">
+
+    <section class="vh-150 gradient-custom" >
+      <div class="p-md-5 py-5 h-150">
+        <div class="row justify-content-center align-items-center h-150">
+          <div class="col-8 col-lg-8 col-xl-8">
+            <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+              <div class="card-body p-4 p-md-5">
+                <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Add a vehicle</h3>
+                <form method="POST" id="form" class="needs-validation" novalidate>
+                    {% csrf_token %}
+
+                  <div class="row">
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.plate.as_hidden }}
+                        <input type="text" name="plate" id="plate" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="plate">Plate</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.registered_company_name.as_hidden }}
+                        <input type="text" name="registered_company_name" id="registered_company_name" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="registered_company_name">Registered Company Name</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.owner_name.as_hidden }}
+                            <div class="select-editable">
+                              <select  class="select form-control form-control-lg" onchange="this.nextElementSibling.value=this.value" >
+                                <option value=""></option>
+                                  {% for owner in owners %}
+                                        <option value="{{ owner.name }}">{{ owner.name }}</option>
+                                  {% endfor %}
+                              </select>
+                              <input class="form-control form-control-lg" type="text" id="owner_name" name="owner_name" value="" required/>
+                                <label class="form-label" for="owner_name">Owner Name</label>
+                              <div class="invalid-feedback">
+                                  Please populate the field with correct data!
+                                </div>
+                            </div>
+
+                      </div>
+
+                      <!--<div class="form-outline">
+                        <input type="text" name="owner_name" id="owner_name" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="owner_name">Owner Name</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                      </div>-->
+                    </div>
+                  </div>
+
+
+                  <div class="row">
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.make.as_hidden }}
+                        <input type="text" name="make" id="make" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="make">Make</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.model.as_hidden }}
+                        <input type="text" name="model" id="model" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="model">Model</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.color.as_hidden }}
+                        <input type="text" name="color" id="color" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="color">Color</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.cylinder_capacity.as_hidden }}
+                        <input type="text" name="cylinder_capacity" id="cylinder_capacity" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="cylinder_capacity">Cylinder Capacity</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.fuel_type.as_hidden }}
+                        <input type="text" name="fuel_type" id="fuel_type" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="fuel_type">Fuel Type</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.year.as_hidden }}
+                        <input type="number" name="year" id="year" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="year">Year</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                    </div>
+                  </div>
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.mileage.as_hidden }}
+                        <input type="number" name="mileage" id="mileage" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="mileage">Mileage</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.LOGBOOK_first_date_of_registration.as_hidden }}
+                        <input type="date" name="LOGBOOK_first_date_of_registration" id="LOGBOOK_first_date_of_registration" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="LOGBOOK_first_date_of_registration">LOGBOOK First Date of Registration</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.mot_expiration_date.as_hidden }}
+                        <input type="date" name="mot_expiration_date" id="mot_expiration_date" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="mot_expiration_date">MOT Expiration Date</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div class="row">
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.pco_expiration_date.as_hidden }}
+                        <input type="date" name="pco_expiration_date" id="pco_expiration_date" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="pco_expiration_date">PCO Expiration Date</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.road_tax_expiration_date.as_hidden }}
+                        <input type="date" name="road_tax_expiration_date" id="road_tax_expiration_date" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="road_tax_expiration_date">Road Tax Expiration Date</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.value.as_hidden }}
+                        <input type="number" name="value" id="value" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="value">Value</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+
+                  <div class="row">
+
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.rent.as_hidden }}
+                        <input type="number" name="rent" id="rent" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="rent">Rent</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.status.as_hidden }}
+                          <select class="select form-control form-control-lg" name="status">
+                              <option value="Available">Available for rent</option>
+                              <option value="On Rent">On Rent</option>
+                              <option value="Sold">Sold</option>
+                              <option value="Scrapped">Scrapped</option>
+                              <option value="Damaged">Damaged</option>
+                          </select>
+                        <label class="form-label" for="status">Status</label>
+                      </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.notes.as_hidden }}
+                        <input type="text" name="notes" id="notes" class="form-control form-control-lg"/>
+                        <label class="form-label" for="notes">Notes</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                {% for message  in messages  %}
+                        <p class="alert alert-danger">{{ message  }}</p>
+                {% endfor %}
+
+                  <div class="float-left">
+                      <a class="btn btn-primary btn-lg" href="/vehicles">Cancel</a>
+                  </div>
+                  <div class="float-right">
+                    <input class="btn btn-primary btn-lg" type="submit" value="Add" />
+                  </div>
+
+                </form>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+        $(document).ready(function() {
+            $('.js-example-basic-multiple').select2();
+        });
+
+        $(document).ready(function() {
+              var forms = document.querySelectorAll('.needs-validation')
+
+              Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                  form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                      event.preventDefault()
+                      event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                  }, false)
+                })
+
+
+
+        });
+
+        $(document).ready(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+
+    </script>
+    <!--
+        $('#form').one('submit', function() {
+            $(this).find('input[type="submit"]').attr('disabled','disabled');
+        });-->
+    <style>
+        .select-editable {position:relative;}
+        .select-editable select {position:absolute;}
+        .select-editable input {position:absolute;  width:90%; border-right: none; border-bottom-right-radius: 0; border-top-right-radius: 0;}
+        .select-editable label {position:relative; padding-top: 47px;}
+        .select-editable div {position:relative;}
+        .select-editable select:focus, .select-editable input:focus {outline:none;}
+
+        .gradient-custom {
+          /* fallback for old browsers */
+          background: #56baed;
+
+          /* Chrome 10-25, Safari 5.1-6 */
+          background: -webkit-linear-gradient(to bottom right, #56baed, #56baed);
+
+          /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+          background: linear-gradient(to bottom right,#56baed, #56baed)
+        }
+
+        .card-registration .select-input.form-control[readonly]:not([disabled]) {
+          font-size: 1rem;
+          line-height: 2.15;
+          padding-left: .75em;
+          padding-right: .75em;
+        }
+        .card-registration .select-arrow {
+          top: 13px;
+        }
+    </style>
+</body>
+</html>

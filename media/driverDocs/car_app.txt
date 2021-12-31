@@ -1,0 +1,143 @@
+wehfh89wef8h9
+
+screen -r 1614
+sudo openvpn /etc/openvpn/ovpn_udp/uk2360.nordvpn.com.udp.ovpn
+Uqc5tz7gCYqBeEYRGyaPNmsa
+v6QTQHJJrjNXNnxCEWuyfys7
+curl ipv4.ident.me
+
+screen -r 1938
+cd /home/scraper
+python3 main.py
+12:08:12.04
+22:58:06
+
+nordvpn login
+:nordvpn connect us9246
+001mail2020@gmail.com
+Password123!
+
+
+nordvpn whitelist add port 22
+Adding in/out_come
+	Types
+		car rent (in)
+		PCO (in)
+		Service & Repairs (in)
+		Other Income (in)
+		Car Sold (in)
+		Expenditure (out)
+
+	Attributes
+		Date
+		Description
+			For "Car Rent" is the plate + active driver - effect balance
+		Value
+		Payment method 
+			Cash
+			Card
+			Account Transfer
+
+FILTERS:
+	- By Vehicle
+	- By Driver
+	- By Owner
+	- By Date Range
+	- BY Payment Method
+
+
+OUTPUT FEATURES:
+	- Show Balance
+
+
+TODO: 
+	- A car can be active on only one driver! -D
+	- Show payment info on a car rental details -D
+	- Add Balance to Accounts
+	- Print a rental and its data -D
+	- Automate vehicle status -D
+	- Balance calculator remove 0,00000
+	- Automate driver status and inactive -D
+	- Last Signed -D
+
+
+Vehicle:
+	- add another field -D
+		before MOT - add LOGBOOK first date of registration (date)
+		after PCO - Road Tax expiration date
+		Color
+		Mileage Out:  
+		Cylinder Capacity 
+		Fuel Type
+	- dont calculate deposit -D
+	- weekly calculated on balance -D
+	- filter for the 3 dates -D
+	- and search for plate numbers -D
+	- notification for every PCO, MOT, Road Tax on next 45 days - whole row in yellow, date in red -D
+	- on add standart rate - to show the rent -D
+	- and change the rent to agreed rent -D
+	- add account - rent car - select vehicle with search option. -D
+	- Edit Agreement -D
+	- Edit RentSheet -D
+	- 1 Dec 2021 - date format for exports on excel RentSheet -D
+	- format: date/mm/YYYY -D
+	- Automatically update vehicle status -D
+	- Notes section on each driver profile
+	- Notes section on each vehicle profile 
+
+monday afternoon
+
+VEHICLES:
+	- Add Vehicle works fine
+	- Only the Available for rent option vehicles will be showed for rentals
+	- Edit works as well as add
+ 	- Upload files and name them
+	- Download the files
+	- All the rentals for this vehicles will be there
+
+DRIVERS
+	- Add Driver works fine
+	- Only the Active drivers will be showed for rentals
+	- Edit works as well as add
+ 	- Upload files and name them
+	- Download the files
+	- All the rentals for this driver will be there
+
+RENTALS
+	- Add rental works fine
+	- Here you have only active drivers and Available for rent vehicles
+	- As soon as you create a rental for a vehicle it will be automatically marked as On Rent and wont 
+	  appear on the list for vehicles for rent
+	- When a rental is done you can mark it as Inactive Rental and this will mark the vehicle as Available again
+	- If you delete Rental instead of inactivating you have to mark the vehicle as active yourself.
+	- You can add as many inactive rentals for a vehicle as you want, so you can add the old ones if you need to
+	- But you can add only one active
+	- The only need for drivers to be on a Rental is to be Active ones
+	- Rent is weekly, so if you add 70, means 10 per day.
+	- Rental 1-29 December (4 weeks), deposit 300, total rent 560, balance -260.
+	- Links to see the Driver details and Vehicle details here, so the page doesn't get too much loaded.
+	- Also the rental appears on each page.
+	- On details page are too many options. You can edit it and add one more week, It will directly add -140 
+	  on the balance.
+	- Also transactions are here for this rental. Before we see the exports, lets add some transactions.
+	- We can export the Agreement for now and the RentSheet actually. Export took so much time.
+	- Agreement has everything from the rental details
+	- RentSheet has every detail just like the example, shows all payment days and also Notes. Let's add one 
+	  extra day - means 20 per day. It will add a last one of only 20 pounds
+	- Accounts shows all the transactions for last 7 days, can change to last 30 days too. 
+	- Add transaction by choosing the type of transaction. 
+	- When add a car rent you will have all the cars which are on active rentals.Lets say he paid 60. On rental
+	  info there are only 200 left now, the transaction is showed here. Now let's export this. Is shows 
+	  everything.
+	- Filter transactions or accounts. By vehicle. By driver. Reset. 
+	- Don't delete the rentals bc it is here bc of the rental.
+	- Now about the export, it is the same thing as the filter, but on excel, and it shows the balance too.
+	- Lets add some data to check. Red for out, green for in. Also older than 7 days.
+	- NOw let's export this.Select filters for all month. Explain that. Can also export by one table.
+	- Now export changes if you select one of three: vehicle, driver or owner. It will be an export based on
+	  those factors. Let's try:
+	- Add another rental, add transaction to the other rental, but can export all the details for this vehicle
+	  with all the retnals it has been on. 
+	- Now export by that vehicle. choose today by clicking twice. Now it shows only Car rent table automatically
+	- Also shows vehicle, drivers all bc we didn't select, and owners all bc we didn't select.
+	- Select by driver and owner. Card method, and type.

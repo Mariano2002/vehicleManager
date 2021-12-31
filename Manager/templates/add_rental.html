@@ -1,0 +1,238 @@
+{%  load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Rental</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+</head>
+<body style="background: #56baed;">
+
+    <section class="vh-150 gradient-custom" >
+      <div class="p-md-5 py-5 h-150">
+        <div class="row justify-content-center align-items-center h-150">
+          <div class="col-8 col-lg-8 col-xl-8">
+            <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+              <div class="card-body p-4 p-md-5">
+                <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Add a rental</h3>
+                <form method="POST" id="form" class="needs-validation" novalidate>
+                    {% csrf_token %}
+
+                  <div class="row">
+
+
+                    <div class="col-md-8 mb-8">
+                      <div class="form-outline">
+                          {{ form.driver_id.as_hidden }}
+                          <label class="form-label" for="status">Select a driver</label>
+                          <select class="select form-control form-control-lg" name="driver_id">
+                              {% for driver in drivers %}
+                                <option value="{{ driver.id }}">{{ driver.name }} {{ driver.last_name }} ({{ driver.email }})</option>
+                              {% endfor %}
+                          </select>
+                      </div>
+                    </div>
+
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                          {{ form.vehicle_id.as_hidden }}
+                          <label class="form-label" for="status">Select a vehicle</label>
+                          <select class="select form-control form-control-lg" id="vehicles" name="vehicle_id" onchange="changeRent()">
+                              {% for vehicle in vehicles %}
+                                <option value="{{ vehicle.id }}">{{ vehicle.plate }}</option>
+                              {% endfor %}
+                          </select>
+                      </div>
+                    </div>
+
+                  </div>
+                    <br>
+                  <div class="row">
+
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.hire_date.as_hidden }}
+                        <input type="date" name="hire_date" id="hire_date" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="hire_date">Hire Date</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                      </div>
+                    </div>
+
+
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.return_date.as_hidden }}
+                        <input type="date" name="return_date" id="return_date" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="return_date">Return Date</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                      </div>
+                    </div>
+
+
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.deposit.as_hidden }}
+                        <input type="number" name="deposit" id="deposit" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="deposit">Deposit</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                    </div>
+                  </div>
+                  </div>
+
+
+                  <div class="row">
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        <input type="number" name="stan_rent" id="stan_rent" value="{{ vehicles.0.rent }}" class="form-control form-control-lg" disabled required/>
+                        <label class="form-label" for="stan_rent">Standard Rent</label>
+                      </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.rent.as_hidden }}
+                        <input type="number" name="rent" id="rent" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="birth_date">Agreed Rent</label>
+                          <div class="invalid-feedback">
+                          Please populate the field with correct data!
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="col-md-4 mb-4">
+                      <div class="form-outline">
+                        {{ form.status.as_hidden }}
+                          <select class="select form-control form-control-lg" name="status">
+                              <option value="Active">Active</option>
+                              <option value="Inactive">Inactive</option>
+                          </select>
+                        <label class="form-label" for="status">Status</label>
+                      </div>
+                    </div>
+
+
+                    <div class="col-md-4 mb-4">
+                    </div>
+                  </div>
+
+
+                {% for message  in messages  %}
+                        <p class="alert alert-danger">{{ message  }}</p>
+                {% endfor %}
+
+                  <div class="float-left">
+                      <a class="btn btn-primary btn-lg" href="/rentals">Cancel</a>
+                  </div>
+                  <div class="float-right">
+                    <input class="btn btn-primary btn-lg" type="submit" value="Add" />
+                  </div>
+
+                </form>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+
+        function changeRent() {
+          veh_id_el = document.getElementById("vehicles");
+          veh_id = veh_id_el.value;
+            {% for vehicle in vehicles %}
+                if ("{{ vehicle.id }}" === veh_id){
+                    document.getElementById("stan_rent").value = "{{ vehicle.rent }}"
+
+                }
+            {% endfor %}
+        }
+
+        $(document).ready(function() {
+            $('.js-example-basic-multiple').select2();
+        });
+
+        $(document).ready(function() {
+          veh_id_el = document.getElementById("vehicles");
+          veh_id = veh_id_el.value;
+            {% for vehicle in vehicles %}
+                if ("{{ vehicle.id }}" === veh_id){
+                    document.getElementById("stan_rent").value = "{{ vehicle.rent }}"
+
+                }
+            {% endfor %}
+        });
+
+        $(document).ready(function() {
+              var forms = document.querySelectorAll('.needs-validation')
+
+              Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                  form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                      event.preventDefault()
+                      event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                  }, false)
+                })
+
+
+
+        });
+
+        $(document).ready(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+
+    </script>
+    <!--
+        $('#form').one('submit', function() {
+            $(this).find('input[type="submit"]').attr('disabled','disabled');
+        });-->
+    <style>
+        .gradient-custom {
+          /* fallback for old browsers */
+          background: #56baed;
+
+          /* Chrome 10-25, Safari 5.1-6 */
+          background: -webkit-linear-gradient(to bottom right, #56baed, #56baed);
+
+          /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+          background: linear-gradient(to bottom right,#56baed, #56baed)
+        }
+
+        .card-registration .select-input.form-control[readonly]:not([disabled]) {
+          font-size: 1rem;
+          line-height: 2.15;
+          padding-left: .75em;
+          padding-right: .75em;
+        }
+        .card-registration .select-arrow {
+          top: 13px;
+        }
+    </style>
+</body>
+</html>

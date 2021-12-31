@@ -1,0 +1,61 @@
+{%  load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up Page</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
+</head>
+<body>
+
+    <div class="wrapper fadeInDown">
+      <div id="formContent">
+        <!-- Tabs Titles -->
+        <a href="/login"><h2 class="inactive underlineHover"> Sign In </h2></a>
+        <h2 class="active"> Sign Up </h2>
+
+        <!-- Login Form -->
+        <form action="" id="form" method="post">
+            {% csrf_token %}
+
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    <p class="alert alert-danger">{{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+            <p>{{form.errors.values.0.error}}</p>
+          <input type="text" id="email" class="fadeIn second" name="email" placeholder="Email">
+          <input type="text" id="username" class="fadeIn second" name="username" placeholder="Username">
+          <input type="password" id="password1" class="fadeIn second" name="password1" placeholder="Password">
+          <input type="password" id="password2" class="fadeIn third" name="password2" placeholder="Repeat Password">
+          <br>
+            <div class="row" style="display: inline-block">
+                <input type="checkbox" id="level1" name="levels" value="level1">
+                <label for="level1"> Level 1</label><br>
+                <input type="checkbox" id="level3" name="levels" value="level3">
+                <label for="level3"> Level 3</label><br>
+            </div>
+            <div class="row" style="display: inline-block">
+                <input type="checkbox" id="level2" name="levels" value="level2">
+                <label for="level2"> Level 2</label><br>
+                <input type="checkbox" id="level4" name="levels" value="level4">
+                <label for="level4"> Level 4</label><br>
+            </div>
+        <br>
+          <input type="submit" class="fadeIn fourth" value="Sign Up">
+        </form>
+
+
+      </div>
+    </div>
+    <script>
+        $('#form').one('submit', function() {
+            $(this).find('input[type="submit"]').attr('disabled','disabled');
+            console.log("locked")
+        });
+    </script>
+
+</body>
+</html>

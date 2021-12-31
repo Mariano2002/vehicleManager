@@ -1,0 +1,100 @@
+{%  load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+<body>
+
+      <span class="table-add float-left mb-3 mr-2">
+            {% if super %}
+            <a class="btn btn-success" style="margin-top: 20px; margin-left: 20px; text-decoration: none;" href="/signup">Create Account</a>
+            {% endif %}
+      </span>
+      <span class="table-add float-right mb-3 mr-2">
+            {% if deletes %}
+            <a class="btn btn-danger" style="margin-top: 20px; margin-right: 20px; text-decoration: none;" href="/deletes_view">Delete Requests</a>
+
+            {% endif %}
+            <a class="btn btn-danger" style="margin-top: 20px; margin-right: 20px; text-decoration: none;" href="/logout">Log out</a>
+      </span>
+
+    <div class="row">
+        <h1 style="padding-top: 25px">Welcome</h1>
+    </div>
+    <div class="row">
+
+        <section class="vh-150 gradient-custom">
+          <div class="p-md-5 py-5 h-50">
+                <div class="wrapper fadeInDown">
+                    <a href="/vehicles">
+                      <div id="formContent">
+                        <!-- Tabs Titles -->
+                          <h1 class="active"> Vehicles </h1>
+
+                      </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+        <br>
+
+        <section class="vh-150 gradient-custom">
+          <div class="p-md-5 py-5 h-50">
+                <div class="wrapper fadeInDown">
+                    <a href="/drivers">
+                      <div id="formContent">
+                        <!-- Tabs Titles -->
+                        <h1 class="active"> Drivers </h1>
+
+                      </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+
+
+    </div>
+    <div class="row">
+
+
+
+        <section class="vh-150 gradient-custom">
+          <div class="p-md-5 py-5 h-50">
+                <div class="wrapper fadeInDown">
+                    <a href="/rentals">
+                      <div id="formContent">
+                        <!-- Tabs Titles -->
+                        <h1 class="active"> Rentals </h1>
+
+                      </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+        <br>
+
+        <section class="vh-150 gradient-custom">
+          <div class="p-md-5 py-5 h-50">
+                <div class="wrapper fadeInDown">
+                    <a href="/accounts">
+                      <div id="formContent">
+                        <!-- Tabs Titles -->
+                        <h1 class="active"> Accounts </h1>
+
+                      </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+
+
+    </div>
+
+</body>
+</html>

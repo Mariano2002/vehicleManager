@@ -1,0 +1,257 @@
+{%  load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Accounts</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+</head>
+<body>
+    <div class="card">
+      <h3 class="card-header text-center font-weight-bold text-uppercase py-4">
+        Accounts
+      </h3>
+      <div class="card-body">
+        <div id="table" class="table-editable">
+
+          <span class="table-add float-left mb-3 mr-2">
+              <a href="/home" class="btn btn-primary">Home</a>
+          </span>
+
+          <span class="table-add float-right mb-3 mr-2">
+            <form method="POST" id="form">
+                {% csrf_token %}
+                <div class="row">
+                  <div class="form-outline">
+                      <select class="select form-control" name="type">
+                          <option value="Car Rent">Car Rent</option>
+                          <option value="Expenditure">Expenditure</option>
+                          <option value="PCO">PCO</option>
+                          <option value="Service & Repairs">Service & Repairs</option>
+                          <option value="Other Income">Other Income</option>
+                          <option value="Car Sold">Car Sold</option>
+                      </select>
+                  </div>
+                  <button type="submit" style="margin-left: 20px;" class="btn btn-primary">Add Transaction</button>
+                </div>
+            </form>
+          </span>
+          <br>
+          <br>
+          <br>
+          <br>
+            <form method="POST" id="form2">
+                {% csrf_token %}
+              <div style="padding-left: 20px" class="row">
+                <div class="col-md-10 mb-10">
+                  <div class="row">
+                        <div class="col-md-2 mb-2">
+                              <div class="form-outline">
+                                  <select class="js-example-basic-multiple form-control form-control-lg" style="width: 100%" name="vehicles" multiple="multiple">
+                                      {% for vehicle in vehicles %}
+                                    <option value="{{ vehicle.id }}">{{ vehicle.plate }}</option>
+                                  {% endfor %}
+                                </select>
+                                <label class="form-label"  for="vehicles">Vehicles</label>
+                              </div>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                              <div class="form-outline">
+                                  <select class="js-example-basic-multiple form-control form-control-lg" style="width: 100%" name="drivers" multiple="multiple">
+                                      {% for driver in drivers %}
+                                    <option value="{{ driver.id }}">{{ driver.name }} {{ driver.last_name }}</option>
+                                  {% endfor %}
+                                </select>
+                                <label class="form-label" for="drivers">Drivers</label>
+                              </div>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                              <div class="form-outline">
+                                  <select class="js-example-basic-multiple form-control form-control-lg" style="width: 100%" name="owners" multiple="multiple">
+                                      {% for owner in owners %}
+                                    <option value="{{ owner.name }}">{{ owner.name }}</option>
+                                  {% endfor %}
+                                </select>
+                                <label class="form-label" for="owners">Owners</label>
+                              </div>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                              <div class="form-outline">
+                                  <select class="js-example-basic-multiple form-control form-control-lg" style="width: 100%" name="payment" multiple="multiple">
+                                    <option value="Cash">Cash</option>
+                                    <option value="Card">Card</option>
+                                    <option value="Account Transfer">Account Transfer</option>
+                                  </select>
+                                <label class="form-label" for="payment">Payment Methods</label>
+                              </div>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                              <div class="form-outline">
+                                  <select class="js-example-basic-multiple form-control form-control-lg" style="width: 100%" name="types" multiple="multiple">
+                                      <option value="Car Rent">Car Rent</option>
+                                      <option value="Expenditure">Expenditure</option>
+                                      <option value="PCO">PCO</option>
+                                      <option value="Service & Repairs">Service & Repairs</option>
+                                      <option value="Other Income">Other Income</option>
+                                      <option value="Car Sold">Car Sold</option>
+                                  </select>
+                                <label class="form-label" for="payment">Transaction Type</label>
+                              </div>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                              <div class="form-outline">
+                                <input type="text" name="daterange" class="form-control"  value="" style="width: 100%" />
+                                <label class="form-label" for="daterange">Date</label>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 mb-2">
+                      <button type="submit" name="action" value="filter" class="btn btn-success">Filter</button>
+                      <a href="/accounts" class="btn btn-success">Reset</a>
+                      <button type="submit" name="action" value="export" class="btn btn-success">Export</button>
+                </div>
+              </div>
+            </form>
+          <br>
+
+          <table id="sortTable" class="table table-bordered table-responsive table-striped text-center">
+            <thead>
+              <tr>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Type</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Description</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Date</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Value</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Payment Method</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Notes</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Income/Outcome</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="myTable">
+                {% for account in accounts %}
+                    {% if account.in_out == "Income" %}
+                    <tr>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%; background-color: lightgreen">{{ account.type }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%; background-color: lightgreen">{{ account.description }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%; background-color: lightgreen">{{ account.date }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%; background-color: lightgreen">{{ account.value }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%; background-color: lightgreen">{{ account.payment_method }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%; background-color: lightgreen">{{ account.notes }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%; background-color: lightgreen">{{ account.in_out }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%; background-color: lightgreen">
+                            <a href="{% url 'delete_account' account.id %}" class="btn-sm btn-danger">Delete</a>
+                        </td>
+                      </tr>
+                    {% else %}
+                    <tr>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%; background-color: lightcoral">{{ account.type }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%; background-color: lightcoral">{{ account.description }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%; background-color: lightcoral">{{ account.date }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%; background-color: lightcoral">{{ account.value }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%; background-color: lightcoral">{{ account.payment_method }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%; background-color: lightcoral">{{ account.notes }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%; background-color: lightcoral">{{ account.in_out }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%; background-color: lightcoral">
+                            <a href="{% url 'delete_account' account.id %}" class="btn-sm btn-danger">Delete</a>
+                        </td>
+                      </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+            </table>
+
+
+          </div>
+
+    </div>
+    </div>
+
+
+    <script src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js">
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js">
+    </script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js">
+    </script>
+    <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js">
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+
+    <script>
+
+        $(document).ready(function() {
+            $('.js-example-basic-multiple').select2();
+
+          $('input[name="daterange"]').daterangepicker({
+            opens: 'left'
+          }, function(start, end, label) {
+            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+          });
+
+        });
+    </script>
+    <script>
+        function select_all() {
+            var trs = document.getElementById("sortTable").getElementsByTagName("tr")
+
+            for (let item of trs) {
+
+                try {
+                    item.getElementsByTagName("td")[0].getElementsByTagName("input")[0].checked = true
+
+                }
+                catch {
+
+                }
+            }
+
+        }
+
+         function export_csv() {
+            var ids = []
+            var trs = document.getElementById("sortTable").getElementsByTagName("tr")
+
+            for (let item of trs) {
+
+                try {
+                    if (item.getElementsByTagName("td")[0].getElementsByTagName("input")[0].checked === true){
+                        console.log(item.getElementsByTagName("td")[0].getElementsByTagName("input")[0].id.replace("customCheck", ""))
+                        ids.push(item.getElementsByTagName("td")[0].getElementsByTagName("input")[0].id.replace("customCheck", ""))
+                    }
+                }
+                catch {
+
+                }
+            }
+
+        }
+
+
+        $('#form').one('submit', function() {
+            $(this).find('input[type="submit"]').attr('disabled','disabled');
+        });
+        $('#form2').one('submit', function() {
+            $(this).find('input[type="submit"]').attr('disabled','disabled');
+        });
+
+        $('#sortTable').DataTable();
+        $('#sortTable2').DataTable();
+    </script>
+</body>
+</html>

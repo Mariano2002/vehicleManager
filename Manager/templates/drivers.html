@@ -1,0 +1,158 @@
+{%  load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Display</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+
+</head>
+<body>
+    <div class="card">
+      <h3 class="card-header text-center font-weight-bold text-uppercase py-4">
+        Drivers
+      </h3>
+      <div class="card-body">
+        <div id="table" class="table-editable">
+
+          <span class="table-add float-left mb-3 mr-2">
+              <a href="/home" class="btn btn-primary">Home</a>
+          </span>
+          <span class="table-add float-right mb-3 mr-2">
+              <a href="/add_driver" class="btn btn-primary">Add Driver</a>
+          </span>
+          <br>
+          <br>
+          <br>
+
+          <table id="sortTable" class="table table-bordered table-responsive table-striped text-center">
+            <thead>
+              <tr>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Email</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Name</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Last Name</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Phone</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Address</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Postcode</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">License Number</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">LN Expiration Date</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">NI</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Birth Date</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Status</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Notes</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="myTable">
+                {% for driver in drivers %}
+                    <tr>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ driver.email }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ driver.name }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ driver.last_name }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ driver.phone }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ driver.address }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ driver.postcode }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ driver.license_number }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ driver.LN_expiration_date }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ driver.NI }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ driver.birth_date }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ driver.status }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ driver.notes }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">
+                            <a href="{% url 'view_driver' driver.id %}" class="btn-sm btn-success">View Details</a>
+                            <a href="{% url 'delete_driver' driver.id %}" class="btn-sm btn-danger">Delete</a>
+                        </td>
+                      </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+
+
+            </div>
+          </div>
+    </div>
+
+
+    <script src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js">
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js">
+    </script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js">
+    </script>
+    <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js">
+    </script>
+    <script>
+        function select_all() {
+            var trs = document.getElementById("sortTable").getElementsByTagName("tr")
+
+            for (let item of trs) {
+
+                try {
+                    item.getElementsByTagName("td")[0].getElementsByTagName("input")[0].checked = true
+
+                }
+                catch {
+
+                }
+            }
+
+        }
+
+         function export_csv() {
+            var ids = []
+            var trs = document.getElementById("sortTable").getElementsByTagName("tr")
+
+            for (let item of trs) {
+
+                try {
+                    if (item.getElementsByTagName("td")[0].getElementsByTagName("input")[0].checked === true){
+                        console.log(item.getElementsByTagName("td")[0].getElementsByTagName("input")[0].id.replace("customCheck", ""))
+                        ids.push(item.getElementsByTagName("td")[0].getElementsByTagName("input")[0].id.replace("customCheck", ""))
+                    }
+                }
+                catch {
+
+                }
+            }
+            if (ids.length !== 0) {
+                var form = $('<form></form>');
+
+                form.attr("method", "post");
+                form.attr("action", "export_csv");
+
+                var field = $('<input></input>');
+
+                field.attr("type", "hidden");
+                field.attr("name", "ids");
+                field.attr("value", JSON.stringify(ids));
+
+                form.append(field);
+
+                // The form needs to be a part of the document in
+                // order for us to be able to submit it.
+                $(document.body).append(form);
+                form.submit();
+
+
+            }
+            else {
+                var p = $('<p class="alert alert-danger">Please select the devices you want to export!</p>');
+                $('#errors').append(p);
+            }
+
+        }
+
+
+        $('#form').one('submit', function() {
+            $(this).find('input[type="submit"]').attr('disabled','disabled');
+        });
+
+        $('#sortTable').DataTable();
+        $('#sortTable2').DataTable();
+    </script>
+</body>
+</html>

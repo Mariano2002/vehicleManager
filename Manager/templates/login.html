@@ -1,0 +1,36 @@
+{%  load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+
+    <div class="wrapper fadeInDown">
+      <div id="formContent">
+        <!-- Tabs Titles -->
+        <h2 class="active"> Sign In </h2>
+
+        <!-- Login Form -->
+        <form action="" method="post">
+            {% csrf_token %}
+
+
+            {% for message  in messages  %}
+                    <p class="alert alert-danger">{{ message  }}</p>
+            {% endfor %}
+          <input type="text" id="name" class="fadeIn second" name="username" placeholder="Username">
+          <input type="password" id="password" class="fadeIn third" name="password" placeholder="Password">
+          <input type="submit" class="fadeIn fourth" value="Log In">
+        </form>
+        <p email="{{ last_one.user_email }}">Last signed in: {{ last_one.username }}</p>
+
+      </div>
+    </div>
+
+
+</body>
+</html>

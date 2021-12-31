@@ -1,0 +1,71 @@
+{%  load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Requests</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+</head>
+<body>
+
+
+    <div class="card">
+      <h3 class="card-header text-center font-weight-bold text-uppercase py-4">
+        Delete Requests
+      </h3>
+      <div class="card-body">
+        <div id="table" class="table-editable">
+
+          <span class="table-add float-left mb-3 mr-2">
+              <a href="/home" class="btn btn-primary">Home</a>
+          </span>
+
+          <br>
+          <br>
+          <br>
+
+          <table class="table table-bordered table-responsive table-striped text-center">
+            <thead>
+              <tr>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">User</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Description</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Accept</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Cancel</th>
+              </tr>
+            </thead>
+            <tbody id="myTable">
+                {% for delete in deletes %}
+                    <tr>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ delete.user }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ delete.description }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;"><a href="/{{ delete.link }}">Accept</a></td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">
+                            <a href="{% url 'delete_deleted' delete.id %}" class="btn-sm btn-success">Cancel</a>
+                        </td>
+                      </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+
+
+
+            </div>
+          </div>
+    </div>
+
+
+    <script src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js">
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js">
+    </script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js">
+    </script>
+    <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js">
+    </script>
+
+</body>
+</html>
