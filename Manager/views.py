@@ -205,10 +205,6 @@ def signup(request):
         level4 = "Yes"
     else:
         level4 = "No"
-    if "level5" in levels:
-        level5 = "Yes"
-    else:
-        level5 = "No"
     print(levels)
     form = CreateUserForm()
 
@@ -216,7 +212,7 @@ def signup(request):
         form = CreateUserForm(request.POST)
         if form.is_valid():
             form.save()
-            permissions.objects.create(user=request.POST.get("username"), level1=level1, level2=level2, level3=level3, level4=level4, level5=level5)
+            permissions.objects.create(user=request.POST.get("username"), level1=level1, level2=level2, level3=level3, level4=level4)
             return redirect(login_page)
     context = {"form":form}
     return render(request, 'registration.html', context)
@@ -1428,89 +1424,94 @@ def update_obalance():
 
 @login_required(login_url="/login")
 def owners(request):
-    update_obalance()
-    if request.method == "POST":
-        name = request.POST.get("name")
-        date_range = request.POST.get("daterange")
-        owners_obj = owner.objects.all()
-        if name != "":
+    if request.user.is_superuser:
+        update_obalance()
+        if request.method == "POST":
+            name = request.POST.get("name")
+            date_range = request.POST.get("daterange")
+            owners_obj = owner.objects.all()
+            if name != "":
+                for i in owners_obj:
+                    if name not in i.name:
+                        owners_obj = owners_obj.exclude(id=i.id)
             for i in owners_obj:
-                if name not in i.name:
+                start = datetime.date(datetime.strptime(date_range.split(" - ")[0], '%m/%d/%Y'))
+                print(start)
+                end = datetime.date(datetime.strptime(date_range.split(" - ")[-1], '%m/%d/%Y'))
+                if i.start >= start and i.end <= end:
+                    pass
+                else:
                     owners_obj = owners_obj.exclude(id=i.id)
-        for i in owners_obj:
-            start = datetime.date(datetime.strptime(date_range.split(" - ")[0], '%m/%d/%Y'))
-            print(start)
-            end = datetime.date(datetime.strptime(date_range.split(" - ")[-1], '%m/%d/%Y'))
-            if i.start >= start and i.end <= end:
-                pass
-            else:
-                owners_obj = owners_obj.exclude(id=i.id)
 
-        if request.POST.get('action') == "search":
-            return render(request, 'owners.html', {'owners':owners_obj, })
-        elif request.POST.get('action') == "export":
+            if request.POST.get('action') == "search":
+                return render(request, 'owners.html', {'owners':owners_obj, })
+            elif request.POST.get('action') == "export":
 
-            output = io.BytesIO()
-            workbook = xlsxwriter.Workbook(output)
-            worksheet = workbook.add_worksheet()
+                output = io.BytesIO()
+                workbook = xlsxwriter.Workbook(output)
+                worksheet = workbook.add_worksheet()
 
-            cell_format_b = workbook.add_format()
-            cell_format_b.set_bold()
+                cell_format_b = workbook.add_format()
+                cell_format_b.set_bold()
 
-            worksheet.write('A1', 'Name:', cell_format_b)
-            worksheet.write('B1', name)
-            worksheet.set_column(0, 0, 18)
-            worksheet.write('D1', 'Date Range:', cell_format_b)
-            worksheet.set_column(1, 0, 18)
-            worksheet.write('E1', "-".join([date_range.split(" - ")[0].split("/")[1], date_range.split(" - ")[0].split("/")[0] , date_range.split(" - ")[0].split("/")[2]]))
-            worksheet.set_column(2, 0, 18)
-            worksheet.write('F1',"-".join([date_range.split(" - ")[-1].split("/")[1], date_range.split(" - ")[-1].split("/")[0] , date_range.split(" - ")[-1].split("/")[2]]))
-            worksheet.set_column(3, 0, 18)
+                worksheet.write('A1', 'Name:', cell_format_b)
+                worksheet.write('B1', name)
+                worksheet.set_column(0, 0, 18)
+                worksheet.write('D1', 'Date Range:', cell_format_b)
+                worksheet.set_column(1, 0, 18)
+                worksheet.write('E1', "-".join([date_range.split(" - ")[0].split("/")[1], date_range.split(" - ")[0].split("/")[0] , date_range.split(" - ")[0].split("/")[2]]))
+                worksheet.set_column(2, 0, 18)
+                worksheet.write('F1',"-".join([date_range.split(" - ")[-1].split("/")[1], date_range.split(" - ")[-1].split("/")[0] , date_range.split(" - ")[-1].split("/")[2]]))
+                worksheet.set_column(3, 0, 18)
 
 
 
-            worksheet.write(3, 0, "Name", cell_format_b)
-            worksheet.write(3, 1, "Sart Date", cell_format_b)
-            worksheet.write(3, 2, "End Date", cell_format_b)
-            worksheet.write(3, 3, "Amount Due", cell_format_b)
-            worksheet.write(3, 4, "Amount Paid", cell_format_b)
-            worksheet.write(3, 5, "Balance", cell_format_b)
-            row = 4
-            for i in owners_obj:
-                worksheet.write(row, 0, i.name)
-                worksheet.set_column(row, 0, 18)
-                worksheet.write(row, 1, i.start.strftime('%d-%m-%Y'))
-                worksheet.set_column(row, 1, 18)
-                worksheet.write(row, 2, i.end.strftime('%d-%m-%Y'))
-                worksheet.set_column(row, 2, 18)
-                worksheet.write(row, 3, i.amount_due)
-                worksheet.set_column(row, 3, 18)
-                worksheet.write(row, 4, i.amount_paid)
-                worksheet.set_column(row, 4, 18)
-                worksheet.write(row, 5, i.balance)
-                worksheet.set_column(row, 5, 18)
-                row += 1
+                worksheet.write(3, 0, "Name", cell_format_b)
+                worksheet.write(3, 1, "Sart Date", cell_format_b)
+                worksheet.write(3, 2, "End Date", cell_format_b)
+                worksheet.write(3, 3, "Amount Due", cell_format_b)
+                worksheet.write(3, 4, "Amount Paid", cell_format_b)
+                worksheet.write(3, 5, "Balance", cell_format_b)
+                row = 4
+                for i in owners_obj:
+                    worksheet.write(row, 0, i.name)
+                    worksheet.set_column(row, 0, 18)
+                    worksheet.write(row, 1, i.start.strftime('%d-%m-%Y'))
+                    worksheet.set_column(row, 1, 18)
+                    worksheet.write(row, 2, i.end.strftime('%d-%m-%Y'))
+                    worksheet.set_column(row, 2, 18)
+                    worksheet.write(row, 3, i.amount_due)
+                    worksheet.set_column(row, 3, 18)
+                    worksheet.write(row, 4, i.amount_paid)
+                    worksheet.set_column(row, 4, 18)
+                    worksheet.write(row, 5, i.balance)
+                    worksheet.set_column(row, 5, 18)
+                    row += 1
 
-            workbook.close()
+                workbook.close()
 
-            response = HttpResponse(content_type='application/vnd.ms-excel')
+                response = HttpResponse(content_type='application/vnd.ms-excel')
 
-            response['Content-Disposition'] = f'attachment;filename="owners.xlsx"'
+                response['Content-Disposition'] = f'attachment;filename="owners.xlsx"'
 
-            response.write(output.getvalue())
-            return response
+                response.write(output.getvalue())
+                return response
 
+
+        else:
+            owners_obj = owner.objects.all()
+
+            return render(request, 'owners.html', {'owners':owners_obj})
 
     else:
-        owners_obj = owner.objects.all()
-
-        return render(request, 'owners.html', {'owners':owners_obj})
+        return HttpResponse("Access Denied")
 
 @login_required(login_url="/login")
 def view_owner(request, owner_id):
-    update_obalance()
-    if request.method == "POST":
-        if permissions.objects.get(user=request.user.username).level5 == "Yes":
+
+    if request.user.is_superuser:
+        update_obalance()
+        if request.method == "POST":
             form = ownerDocsForm(request.POST, request.FILES)
             if form.is_valid():
                 form.save()
@@ -1520,21 +1521,23 @@ def view_owner(request, owner_id):
                 messages.error(request, 'Please use correct data!')
                 return redirect('view_owner', owner_id=owner_id)
         else:
-            return HttpResponse("Access Denied")
+
+            owner_obj = owner.objects.all().filter(id=owner_id)
+
+            doc_obj = ownerDocs.objects.all().filter(owner_account_id=owner_id)
+
+
+            form = ownerDocsForm
+
+            return render(request, 'view_owner.html', {'owners':owner_obj, 'documents':doc_obj, 'form':form})
+
     else:
+        return HttpResponse("Access Denied")
 
-        owner_obj = owner.objects.all().filter(id=owner_id)
-
-        doc_obj = ownerDocs.objects.all().filter(owner_account_id=owner_id)
-
-
-        form = ownerDocsForm
-
-        return render(request, 'view_owner.html', {'owners':owner_obj, 'documents':doc_obj, 'form':form})
 
 @login_required(login_url="/login")
 def add_owner(request):
-    if permissions.objects.get(user=request.user.username).level5 == "Yes":
+    if request.user.is_superuser:
         if(request.method) == "POST":
 
 
@@ -1557,7 +1560,7 @@ def add_owner(request):
 
 @login_required(login_url="/login")
 def edit_owner(request, owner_id):
-    if permissions.objects.get(user=request.user.username).level5 == "Yes":
+    if request.user.is_superuser:
         update_obalance()
 
         if(request.method) == "POST":

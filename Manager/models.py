@@ -135,7 +135,6 @@ class permissions(models.Model):
     level2 = models.CharField(max_length=3, choices=yesno,)
     level3 = models.CharField(max_length=3, choices=yesno,)
     level4 = models.CharField(max_length=3, choices=yesno,)
-    level5 = models.CharField(max_length=3, choices=yesno,)
 
 
 
