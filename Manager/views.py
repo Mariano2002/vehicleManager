@@ -258,6 +258,8 @@ def vehicles(request):
                     date_now = datetime.strptime(str(i.pco_expiration_date), '%Y-%m-%d')
                 elif type == "ROAD TAX":
                     date_now = datetime.strptime(str(i.road_tax_expiration_date), '%Y-%m-%d')
+                elif type == "LOGBOOK":
+                    date_now = datetime.strptime(str(i.LOGBOOK_first_date_of_registration), '%Y-%m-%d')
 
                 if start <= date_now <= end:
                     pass
@@ -1465,14 +1467,20 @@ def owners(request):
                 worksheet.set_column(3, 0, 18)
 
 
+                border_bottom = workbook.add_format({'bottom': 1})
+                border_bottom.set_bold()
 
-                worksheet.write(3, 0, "Name", cell_format_b)
-                worksheet.write(3, 1, "Sart Date", cell_format_b)
-                worksheet.write(3, 2, "End Date", cell_format_b)
-                worksheet.write(3, 3, "Amount Due", cell_format_b)
-                worksheet.write(3, 4, "Amount Paid", cell_format_b)
-                worksheet.write(3, 5, "Balance", cell_format_b)
+                worksheet.write(3, 0, "Name", border_bottom)
+                worksheet.write(3, 1, "Sart Date", border_bottom)
+                worksheet.write(3, 2, "End Date", border_bottom)
+                worksheet.write(3, 3, "Amount Due", border_bottom)
+                worksheet.write(3, 4, "Amount Paid", border_bottom)
+                worksheet.write(3, 5, "Balance", border_bottom)
                 row = 4
+                due = 0
+                paid = 0
+                balance = 0
+
                 for i in owners_obj:
                     worksheet.write(row, 0, i.name)
                     worksheet.set_column(row, 0, 18)
@@ -1481,13 +1489,26 @@ def owners(request):
                     worksheet.write(row, 2, i.end.strftime('%d-%m-%Y'))
                     worksheet.set_column(row, 2, 18)
                     worksheet.write(row, 3, i.amount_due)
+                    due += int(i.amount_due)
                     worksheet.set_column(row, 3, 18)
                     worksheet.write(row, 4, i.amount_paid)
+                    paid += int(i.amount_paid)
                     worksheet.set_column(row, 4, 18)
                     worksheet.write(row, 5, i.balance)
+                    balance += int(i.balance)
                     worksheet.set_column(row, 5, 18)
                     row += 1
 
+                border_top = workbook.add_format({'top': 1})
+                border_top_bold = workbook.add_format({'top': 1})
+                border_top_bold.set_bold()
+
+                worksheet.write(row, 0, "Total:", border_top_bold)
+                worksheet.write(row, 1, "", border_top)
+                worksheet.write(row, 2, "", border_top)
+                worksheet.write(row, 3, due, border_top)
+                worksheet.write(row, 4, paid, border_top)
+                worksheet.write(row, 5, balance, border_top)
                 workbook.close()
 
                 response = HttpResponse(content_type='application/vnd.ms-excel')
@@ -1606,7 +1627,7 @@ def delete_owner(request, owner_id):
 @login_required(login_url="/login")
 def delete_ownerDoc(request, ownerDoc_id):
 
-    ownerDoc_i = ownerDocs.objects.all().filter(id=ownerDoc_id)[0]
+    ownerDoc_i = ownerDocs.objects.all().filter(owner_account_id=ownerDoc_id)[0]
     owner_id = ownerDoc_i.owner_account_id
     if request.user.is_superuser:
         ownerDoc_i.delete()

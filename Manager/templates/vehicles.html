@@ -45,6 +45,7 @@
                                     <option value="MOT">MOT</option>
                                     <option value="PCO">PCO</option>
                                     <option value="ROAD TAX">ROAD TAX</option>
+                                    <option value="LOGBOOK">LOGBOOK</option>
                                   </select>
                                 <label class="form-label" for="date_type">Select</label>
                               </div>
@@ -107,7 +108,13 @@
                         <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ vehicle.make }}</td>
                         <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ vehicle.model }}</td>
                         <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ vehicle.color }}</td>
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ vehicle.status }}</td>
+                        {% if vehicle.status == "Available" %}
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%; background-color: #46C646">{{ vehicle.status }}</td>
+                        {% elif vehicle.status == "On Rent" %}
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%; background-color: #FF6666">{{ vehicle.status }}</td>
+                        {% else %}
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%; background-color: darkgray">{{ vehicle.status }}</td>
+                        {% endif %}
                         <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ vehicle.rent }}</td>
                         <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ vehicle.notes }}</td>
                         {% if vehicle.id in logbook %}
