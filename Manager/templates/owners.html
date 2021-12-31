@@ -29,26 +29,15 @@
                 {% csrf_token %}
               <div style="padding-left: 20px" class="row">
                   <div class="col-md-2 mb-2"></div>
+                  <div class="col-md-1 mb-1"></div>
+
                         <div class="col-md-2 mb-2">
                               <div class="form-outline">
-                                <input type="text" name="plate" class="form-control"  value="" style="width: 100%" />
-                                <label class="form-label" for="plate">Plate</label>
+                                <input type="text" name="name" class="form-control"  value="" style="width: 100%" />
+                                <label class="form-label" for="name">Name</label>
                               </div>
                         </div>
 
-                        <div class="col-md-1 mb-1">
-                            <button type="submit" class="btn btn-success" name="action" value="plate" >Search</button>
-                        </div>
-                        <div class="col-md-2 mb-2">
-                              <div class="form-outline">
-                                  <select class="form-control" style="width: 100%" name="date_type" >
-                                    <option value="MOT">MOT</option>
-                                    <option value="PCO">PCO</option>
-                                    <option value="ROAD TAX">ROAD TAX</option>
-                                  </select>
-                                <label class="form-label" for="date_type">Select</label>
-                              </div>
-                        </div>
 
                         <div class="col-md-2 mb-2">
                               <div class="form-outline">
@@ -56,11 +45,16 @@
                                 <label class="form-label" for="daterange">Date</label>
                               </div>
                         </div>
+
                         <div class="col-md-1 mb-1">
-                            <button type="submit" class="btn btn-success" name="action" value="date" >Search</button>
+                            <button type="submit" class="btn btn-success" name="action" value="search" >Search Both</button>
                         </div>
                         <div class="col-md-1 mb-1">
                             <a href="/owners" class="btn btn-success">Reset</a>
+                        </div>
+
+                        <div class="col-md-1 mb-1">
+                            <button type="submit" class="btn btn-success" name="action" value="export" >Export</button>
                         </div>
               </div>
 
@@ -70,24 +64,12 @@
             <thead>
               <tr>
                 <th class="text-center" style="white-space: nowrap;width: 1%;">Actions</th>
-                <th class="text-center" style="white-space: nowrap;width: 1%;">Plate</th>
-                <th class="text-center" style="white-space: nowrap;width: 1%;">Registered Company Name</th>
-                <th class="text-center" style="white-space: nowrap;width: 1%;">Owner Name</th>
-                <th class="text-center" style="white-space: nowrap;width: 1%;">Make</th>
-                <th class="text-center" style="white-space: nowrap;width: 1%;">Model</th>
-                <th class="text-center" style="white-space: nowrap;width: 1%;">Color</th>
-                <th class="text-center" style="white-space: nowrap;width: 1%;">Cylinder Capacity</th>
-                <th class="text-center" style="white-space: nowrap;width: 1%;">Fuel Type</th>
-                <th class="text-center" style="white-space: nowrap;width: 1%;">Year</th>
-                <th class="text-center" style="white-space: nowrap;width: 1%;">Mileage</th>
-                <th class="text-center" style="white-space: nowrap;width: 1%;">Value</th>
-                <th class="text-center" style="white-space: nowrap;width: 1%;">Rent</th>
-                <th class="text-center" style="white-space: nowrap;width: 1%;">LOGBOOK First Date of Registration</th>
-                <th class="text-center" style="white-space: nowrap;width: 1%;">MOT Expiration Date</th>
-                <th class="text-center" style="white-space: nowrap;width: 1%;">PCO Expiration Date</th>
-                <th class="text-center" style="white-space: nowrap;width: 1%;">Road Tax Expiration Date</th>
-                <th class="text-center" style="white-space: nowrap;width: 1%;">Status</th>
-                <th class="text-center" style="white-space: nowrap;width: 1%;">Notes</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Name</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Start Date</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">End Date</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Amount Due</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Amount Paid</th>
+                <th class="text-center" style="white-space: nowrap;width: 1%;">Balance Outstanding</th>
               </tr>
             </thead>
             <tbody id="myTable">
@@ -101,36 +83,12 @@
                             <a href="{% url 'view_owner' owner.id %}" class="btn-sm btn-success">View Details</a>
                             <a href="{% url 'delete_owner' owner.id %}" class="btn-sm btn-danger">Delete</a>
                         </td>
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.plate }}</td>
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.registered_company_name }}</td>
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.owner_name }}</td>
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.make }}</td>
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.model }}</td>
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.color }}</td>
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.cylinder_capacity }}</td>
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.fuel_type }}</td>
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.year }}</td>
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.mileage }}</td>
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.value }}</td>
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.rent }}</td>
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.LOGBOOK_first_date_of_registration }}</td>
-                        {% if owner.id in mot %}
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;background-color: #FF6666">{{ owner.mot_expiration_date }}</td>
-                        {% else %}
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.mot_expiration_date }}</td>
-                        {% endif %}
-                        {% if owner.id in pco %}
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;background-color: #FF6666">{{ owner.pco_expiration_date }}</td>
-                        {% else %}
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.pco_expiration_date }}</td>
-                        {% endif %}
-                        {% if owner.id in road %}
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;background-color: #FF6666">{{ owner.road_tax_expiration_date }}</td>
-                        {% else %}
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.road_tax_expiration_date }}</td>
-                        {% endif %}
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.status }}</td>
-                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.notes }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.name }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.start }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.end }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.amount_due }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.amount_paid }}</td>
+                        <td class="pt-3-half" style="white-space: nowrap;width: 1%;">{{ owner.balance }}</td>
                       </tr>
                 {% endfor %}
             </tbody>

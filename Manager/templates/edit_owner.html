@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Add owner</title>
+    <title>Edit owner</title>
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
@@ -21,7 +21,7 @@
           <div class="col-8 col-lg-8 col-xl-8">
             <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
               <div class="card-body p-4 p-md-5">
-                <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Add a owner</h3>
+                <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Edit owner {{ owner.name }} {{ owner.last_name }}</h3>
                 <form method="POST" id="form" class="needs-validation" novalidate>
                     {% csrf_token %}
 
@@ -30,7 +30,7 @@
                     <div class="col-md-4 mb-4">
                       <div class="form-outline">
                         {{ form.name.as_hidden }}
-                        <input type="text" name="name" id="name" class="form-control form-control-lg" required/>
+                        <input type="text" name="name" value="{{ owner.name }}" id="name" class="form-control form-control-lg" required/>
                         <label class="form-label" for="name">Name</label>
                           <div class="invalid-feedback">
                           Please populate the field with correct data!
@@ -42,7 +42,7 @@
                     <div class="col-md-4 mb-4">
                       <div class="form-outline">
                         {{ form.start.as_hidden }}
-                        <input type="date" name="start" id="start" class="form-control form-control-lg" required/>
+                        <input type="date" name="start" value="{{ owner.start|date:"Y-m-d" }}" id="start" class="form-control form-control-lg" required/>
                         <label class="form-label" for="start">Start Date</label>
                           <div class="invalid-feedback">
                           Please populate the field with correct data!
@@ -51,49 +51,47 @@
                     </div>
 
 
+
                     <div class="col-md-4 mb-4">
                       <div class="form-outline">
                         {{ form.end.as_hidden }}
-                        <input type="date" name="end" id="end" class="form-control form-control-lg" required/>
+                        <input type="date" name="end" value="{{ owner.end|date:"Y-m-d" }}" id="end" class="form-control form-control-lg" required/>
                         <label class="form-label" for="end">End Date</label>
                           <div class="invalid-feedback">
                           Please populate the field with correct data!
                         </div>
                       </div>
                     </div>
-
                   </div>
 
-
                   <div class="row">
-
 
                     <div class="col-md-4 mb-4">
                       <div class="form-outline">
                         {{ form.amount_due.as_hidden }}
-                        <input type="number" name="amount_due" id="amount_due" class="form-control form-control-lg" required/>
+                        <input type="number" name="amount_due" value="{{ owner.amount_due }}" id="amount_due" class="form-control form-control-lg" required/>
                         <label class="form-label" for="amount_due">Amount Due</label>
                           <div class="invalid-feedback">
                           Please populate the field with correct data!
                         </div>
+                      </div>
                     </div>
-                  </div>
+
 
                     <div class="col-md-4 mb-4">
                       <div class="form-outline">
                         {{ form.amount_paid.as_hidden }}
-                        <input type="number" name="amount_paid" id="amount_paid" class="form-control form-control-lg" required/>
+                        <input type="number" name="amount_paid" value="{{ owner.amount_paid }}" id="amount_paid" class="form-control form-control-lg" required/>
                         <label class="form-label" for="amount_paid">Amount Paid</label>
                           <div class="invalid-feedback">
                           Please populate the field with correct data!
                         </div>
+                      </div>
                     </div>
-                  </div>
 
 
                     <div class="col-md-4 mb-4">
                     </div>
-
                   </div>
 
 
@@ -105,7 +103,7 @@
                       <a class="btn btn-primary btn-lg" href="/owners">Cancel</a>
                   </div>
                   <div class="float-right">
-                    <input class="btn btn-primary btn-lg" type="submit" value="Add" />
+                    <input class="btn btn-primary btn-lg" type="submit" value="Save" />
                   </div>
 
                 </form>
@@ -152,13 +150,6 @@
             $(this).find('input[type="submit"]').attr('disabled','disabled');
         });-->
     <style>
-        .select-editable {position:relative;}
-        .select-editable select {position:absolute;}
-        .select-editable input {position:absolute;  width:90%; border-right: none; border-bottom-right-radius: 0; border-top-right-radius: 0;}
-        .select-editable label {position:relative; padding-top: 47px;}
-        .select-editable div {position:relative;}
-        .select-editable select:focus, .select-editable input:focus {outline:none;}
-
         .gradient-custom {
           /* fallback for old browsers */
           background: #56baed;

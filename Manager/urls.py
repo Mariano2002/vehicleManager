@@ -1,17 +1,16 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from .views import *
 from django.contrib.auth import views as auth_views
-from django.conf.urls import url
 
 urlpatterns = [
-    url(r'^$', login_page, name='login_page'),
+    re_path(r'^$', login_page, name='login_page'),
 
     path('login', login_page, name='login_page'),
     path('signup', signup, name='signup'),
     path('logout', logout_page, name="logout_page"),
 
-    url(r'^$', home, name='display'),
+    re_path(r'^$', home, name='display'),
     path('home', home, name='display'),
     path('download/<path:path>', download, name='download'),
 
@@ -47,12 +46,12 @@ urlpatterns = [
     path('delete_deleted/<int:delete_id>', delete_deleted, name="delete_deleted"),
     path('deletes_view', deletes_view, name="deletes_view"),
 
-    # path('owners', owners, name="owners"),
-    # path('view_owner/<int:owner_id>', view_owner, name="view_owner"),
-    # path('edit_owner/<int:owner_id>', edit_owner, name="edit_owner"),
-    # path('add_owner', add_owner, name="add_owner"),
-    # path('delete_owner/<int:owner_id>', delete_owner, name="delete_owner"),
-    # path('delete_ownerDoc/<int:ownerDoc_id>', delete_ownerDoc, name="delete_ownerDoc"),
+    path('owners', owners, name="owners"),
+    path('view_owner/<int:owner_id>', view_owner, name="view_owner"),
+    path('edit_owner/<int:owner_id>', edit_owner, name="edit_owner"),
+    path('add_owner', add_owner, name="add_owner"),
+    path('delete_owner/<int:owner_id>', delete_owner, name="delete_owner"),
+    path('delete_ownerDoc/<int:ownerDoc_id>', delete_ownerDoc, name="delete_ownerDoc"),
 
 
 ]

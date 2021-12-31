@@ -205,6 +205,10 @@ def signup(request):
         level4 = "Yes"
     else:
         level4 = "No"
+    if "level5" in levels:
+        level5 = "Yes"
+    else:
+        level5 = "No"
     print(levels)
     form = CreateUserForm()
 
@@ -212,7 +216,7 @@ def signup(request):
         form = CreateUserForm(request.POST)
         if form.is_valid():
             form.save()
-            permissions.objects.create(user=request.POST.get("username"), level1=level1, level2=level2, level3=level3, level4=level4)
+            permissions.objects.create(user=request.POST.get("username"), level1=level1, level2=level2, level3=level3, level4=level4, level5=level5)
             return redirect(login_page)
     context = {"form":form}
     return render(request, 'registration.html', context)
@@ -1412,290 +1416,205 @@ def deletes_view(request):
 
 
 
+def update_obalance():
 
-# @login_required(login_url="/login")
-# def owners(request):
-#     owners_obj = owner.objects.all()
-#
-#     return render(request, 'owners.html', {'owners':owners_obj})
-#
-# @login_required(login_url="/login")
-# def view_owner(request, owner_id):
-#     update_vehicle_status()
-#     update_balance()
-#     if request.method == "POST":
-#         if permissions.objects.get(user=request.user.username).level3 == "Yes":
-#             if request.POST.get("id") != None:
-#                 owner_i = owner.objects.get(id=request.POST.get("id"))
-#
-#                 def days_between(d1, d2):
-#                     return abs((d2 - d1).days)
-#
-#                 day_price = owner_i.rent / 7
-#                 total_to_pay = days_between(owner_i.return_date, owner_i.hire_date) * day_price
-#
-#                 output = io.BytesIO()
-#                 workbook = xlsxwriter.Workbook(output)
-#                 worksheet = workbook.add_worksheet()
-#
-#                 cell_format = workbook.add_format()
-#                 cell_format.set_bold()
-#
-#                 worksheet.write('A1', 'Driver:', cell_format)
-#                 worksheet.write('B1', owner_i.driver_full_name)
-#                 worksheet.write('D1', "Vehicle:", cell_format)
-#                 worksheet.write('E1', owner_i.vehicle_plate)
-#
-#                 worksheet.write('A2', 'Hire Date:', cell_format)
-#                 worksheet.write('B2', str(owner_i.hire_date.strftime('%d-%m-%Y')))
-#                 worksheet.write('A3', 'Return Date:', cell_format)
-#                 worksheet.write('B3', str(owner_i.return_date.strftime('%d-%m-%Y')))
-#                 worksheet.write('D2', "Rent:", cell_format)
-#                 worksheet.write('E2', owner_i.rent)
-#                 worksheet.write('D3', "Total to pay:", cell_format)
-#                 worksheet.write('E3', total_to_pay)
-#
-#                 border_bottom = workbook.add_format({'bottom': 1})
-#                 border_bottom.set_bold()
-#
-#                 row = 4
-#                 col = 0
-#                 for nr_max, i in enumerate(['Cash', 'Card', 'Account Transfer', 'Date']):
-#                     if i != "":
-#                         worksheet.write(row, col, i, border_bottom)
-#                     else:
-#                         worksheet.write(row, col, i, cell_format)
-#                     worksheet.set_column(row, col, 18)
-#                     col += 1
-#
-#                 accounts_obj = account.objects.all().filter(owner_id=str(request.POST.get("id")))
-#                 print(accounts_obj)
-#                 max_row = 0
-#                 row = 5
-#                 cash_balance = 0
-#                 card_balance = 0
-#                 account_balance = 0
-#                 for i in accounts_obj:
-#                     list_to_write = []
-#                     if i.payment_method == 'Cash':
-#                         col = 0
-#                         for el in list_to_write+["£"+str(i.value), '', '', str(i.date.strftime('%d-%m-%Y'))]:
-#                             worksheet.write(row, col, el)
-#                             col += 1
-#                         row += 1
-#                         cash_balance += i.value
-#                     if i.payment_method == 'Card':
-#                         col = 0
-#                         for el in list_to_write+['', "£"+str(i.value), '', str(i.date.strftime('%d-%m-%Y'))]:
-#                             worksheet.write(row, col, el)
-#                             col += 1
-#                         row += 1
-#                         card_balance += i.value
-#                     if i.payment_method == 'Account Transfer':
-#                         col = 0
-#                         for el in list_to_write+['', '', "£"+str(i.value), str(i.date.strftime('%d-%m-%Y'))]:
-#                             worksheet.write(row, col, el)
-#                             col += 1
-#                         row += 1
-#                         account_balance += i.value
-#                     if row > max_row:
-#                         max_row = row
-#                 balances = {'cash': cash_balance, 'card': card_balance, 'account': account_balance}
-#
-#                 list_total = ["£" + str(balances['cash']), "£" + str(balances['card']),
-#                                                "£" + str(balances['account']), ""]
-#
-#                 border_top = workbook.add_format({'top': 1})
-#                 border_top_bold = workbook.add_format({'top': 1})
-#                 border_top_bold.set_bold()
-#
-#                 if max_row < 6:
-#                     max_row = 6
-#                 row = max_row
-#                 col = 0
-#                 for i in list_total:
-#                     worksheet.write(row, col, i, border_top)
-#                     col += 1
-#
-#
-#
-#
-#                 row += 1
-#
-#
-#
-#                 outcome = total_to_pay
-#                 income = balances['cash'] + balances['card'] + balances['account']
-#                 deposit = owner_i.deposit
-#
-#                 total = income-outcome#+deposit
-#                 worksheet.write(row+1, 0, "Total Paid:", cell_format)
-#                 worksheet.write(row+1, 1, "£"+str(income))
-#                 worksheet.write(row+2, 0, "Total to pay:", cell_format)
-#                 worksheet.write(row+2, 1, "£"+str(outcome))
-#                 worksheet.write(row+3, 0, "Deposit:", cell_format)
-#                 worksheet.write(row+3, 1, "£"+str(deposit))
-#                 worksheet.write(row+4, 0, "Balance:", cell_format)
-#                 worksheet.write(row+4, 1, "£"+str(total))
-#
-#
-#
-#                 workbook.close()
-#
-#                 response = HttpResponse(content_type='application/vnd.ms-excel')
-#
-#                 response['Content-Disposition'] = f'attachment;filename="owner_{request.POST.get("id")}.xlsx"'
-#
-#                 response.write(output.getvalue())
-#                 return response
-#
-#             else:
-#                 form = ownerDocsForm(request.POST, request.FILES)
-#                 if form.is_valid():
-#                     form.save()
-#                     return redirect('view_owner', owner_id=owner_id)
-#                 else:
-#                     messages.error(request, 'Please use correct data!')
-#                     return redirect('view_owner', owner_id=owner_id)
-#         else:
-#             return HttpResponse("Access Denied")
-#     else:
-#
-#         update_balance()
-#         owner_obj = owner.objects.all().filter(id=owner_id)
-#
-#         doc_obj = ownerDocs.objects.all().filter(owner_id=owner_id)
-#
-#         accounts_owner = account.objects.all().filter(owner_id=owner_id)
-#
-#         form = ownerDocsForm
-#         return render(request, 'view_owner.html', {'owners':owner_obj, 'documents':doc_obj, 'accounts':accounts_owner, 'form':form})
-#
-# @login_required(login_url="/login")
-# def add_owner(request):
-#     if permissions.objects.get(user=request.user.username).level3 == "Yes":
-#         update_vehicle_status()
-#         if(request.method) == "POST":
-#
-#             updated_data = request.POST.copy()
-#             print(updated_data)
-#             print(updated_data['driver_id'])
-#             updated_data.update({'driver_full_name': driver.objects.all().filter(id=updated_data['driver_id'])[0].name+" "+driver.objects.all().filter(id=updated_data['driver_id'])[0].last_name})
-#             updated_data.update({'vehicle_plate': vehicle.objects.all().filter(id=updated_data['vehicle_id'])[0].plate})
-#             updated_data.update({'balance': 0})
-#             print(updated_data)
-#             form = ownerForm(data=updated_data)
-#
-#
-#             if updated_data['status'] == 'Active':
-#                 vehicle_i = vehicle.objects.get(id=updated_data['vehicle_id'])
-#                 vehicle_i.status = "On Rent"
-#                 vehicle_i.save()
-#                 if len(owner.objects.all().filter(vehicle_id=updated_data['vehicle_id'], status='Active')) != 0:
-#                     messages.error(request, 'This vehicle already has an active owner!')
-#                     return redirect(add_owner)
-#
-#             if form.is_valid():
-#                 # print(form.errors)
-#                 form.save()
-#                 return redirect(owners)
-#             else:
-#                 messages.error(request, 'Please use correct data!')
-#                 return redirect(add_owner)
-#
-#         else:
-#             form = ownerForm
-#             vehicles_obj = vehicle.objects.all().filter(status="Available")
-#             drivers_obj = driver.objects.all().filter(status="Active")
-#             return render(request, 'add_owner.html', {'form':form, 'vehicles':vehicles_obj, 'drivers':drivers_obj})
-#
-#     else:
-#         return HttpResponse("Access Denied")
-# @login_required(login_url="/login")
-# def edit_owner(request, owner_id):
-#     if permissions.objects.get(user=request.user.username).level3 == "Yes":
-#         update_vehicle_status()
-#
-#         if(request.method) == "POST":
-#             owner_i = owner.objects.all().filter(id=owner_id)[0]
-#             updated_data = request.POST.copy()
-#             print(updated_data)
-#             print(updated_data['driver_id'])
-#             updated_data.update({'driver_full_name': driver.objects.all().filter(id=updated_data['driver_id'])[0].name+" "+driver.objects.all().filter(id=updated_data['driver_id'])[0].last_name})
-#             updated_data.update({'vehicle_plate': vehicle.objects.all().filter(id=updated_data['vehicle_id'])[0].plate})
-#             updated_data.update({'balance': owner_i.balance})
-#             print(updated_data)
-#             form = ownerForm(data=updated_data, instance=owner_i)
-#
-#
-#             if updated_data['status'] == 'Active':
-#                 vehicle_i = vehicle.objects.get(id=updated_data['vehicle_id'])
-#                 vehicle_i.status = "On Rent"
-#                 vehicle_i.save()
-#                 if len(owner.objects.all().filter(vehicle_id=updated_data['vehicle_id'], status='Active')) != 0:
-#                     if owner.objects.all().filter(vehicle_id=updated_data['vehicle_id'], status='Active')[0].id != owner_id:
-#                         messages.error(request, 'This vehicle already has an active owner!')
-#                         return redirect(add_owner)
-#             else:
-#                 vehicle_i = vehicle.objects.all().filter(id=updated_data['vehicle_id'], status='On Rent')
-#                 if len(vehicle_i) != 0:
-#                     vehicle_i = vehicle_i[0]
-#                     vehicle_i.status = "Available"
-#                     vehicle_i.save()
-#
-#             if form.is_valid():
-#                 # print(form.errors)
-#                 form.save()
-#                 return redirect('view_owner', owner_id=owner_id)
-#             else:
-#                 messages.error(request, 'Please use correct data!')
-#                 return redirect('edit_owner', owner_id=owner_id)
-#
-#         else:
-#             form = ownerForm
-#             vehicles_obj = vehicle.objects.all().filter(status="Available")
-#             vehicles_obj |= vehicle.objects.filter(id=owner.objects.get(id=owner_id).vehicle_id)
-#             drivers_obj = driver.objects.all().filter(status="Active")
-#             drivers_obj |= driver.objects.filter(id=owner.objects.get(id=owner_id).driver_id)
-#             owner_obj = owner.objects.all().filter(id=owner_id)[0]
-#             return render(request, 'edit_owner.html', {'owner':owner_obj, 'form':form, 'vehicles':vehicles_obj, 'drivers':drivers_obj})
-#     else:
-#         return HttpResponse("Access Denied")
-#
-# @login_required(login_url="/login")
-# def delete_owner(request, owner_id):
-#
-#     if request.user.is_superuser:
-#         owner.objects.all().filter(id=owner_id)[0].delete()
-#         try:
-#             deletes.objects.get(link="delete_owner/"+str(owner_id)).delete()
-#             return redirect(deletes_view)
-#         except:
-#             pass
-#     else:
-#         try:
-#             deletes.objects.get(link="delete_owner/"+str(owner_id))
-#         except:
-#             deletes.objects.create(user=request.user.username, description="Delete owner with ID : "+str(owner_id), link="delete_owner/"+str(owner_id))
-#
-#     return redirect(owners)
-#
-#
-# @login_required(login_url="/login")
-# def delete_ownerDoc(request, ownerDoc_id):
-#
-#     ownerDoc_i = ownerDocs.objects.all().filter(id=ownerDoc_id)[0]
-#     owner_id = ownerDoc_i.owner_id
-#     if request.user.is_superuser:
-#         ownerDoc_i.delete()
-#         try:
-#             deletes.objects.get(link="delete_ownerDoc/"+str(ownerDoc_id)).delete()
-#             return redirect(deletes_view)
-#         except:
-#             pass
-#     else:
-#         try:
-#             deletes.objects.get(link="delete_ownerDoc/"+str(ownerDoc_id))
-#         except:
-#             deletes.objects.create(user=request.user.username, description="Delete owner Document with name: "+ownerDocs.objects.get(id=ownerDoc_id).file_name, link="delete_ownerDoc/"+str(ownerDoc_id))
-#     return redirect('view_owner', owner_id=owner_id)
+    owners_obj = owner.objects.all()
+    for owner_i in owners_obj:
+
+        balance = owner_i.amount_due - owner_i.amount_paid
+        owner_i.balance = balance
+        owner_i.save()
+
+
+@login_required(login_url="/login")
+def owners(request):
+    update_obalance()
+    if request.method == "POST":
+        name = request.POST.get("name")
+        date_range = request.POST.get("daterange")
+        owners_obj = owner.objects.all()
+        if name != "":
+            for i in owners_obj:
+                if name not in i.name:
+                    owners_obj = owners_obj.exclude(id=i.id)
+        for i in owners_obj:
+            start = datetime.date(datetime.strptime(date_range.split(" - ")[0], '%m/%d/%Y'))
+            print(start)
+            end = datetime.date(datetime.strptime(date_range.split(" - ")[-1], '%m/%d/%Y'))
+            if i.start >= start and i.end <= end:
+                pass
+            else:
+                owners_obj = owners_obj.exclude(id=i.id)
+
+        if request.POST.get('action') == "search":
+            return render(request, 'owners.html', {'owners':owners_obj, })
+        elif request.POST.get('action') == "export":
+
+            output = io.BytesIO()
+            workbook = xlsxwriter.Workbook(output)
+            worksheet = workbook.add_worksheet()
+
+            cell_format_b = workbook.add_format()
+            cell_format_b.set_bold()
+
+            worksheet.write('A1', 'Name:', cell_format_b)
+            worksheet.write('B1', name)
+            worksheet.set_column(0, 0, 18)
+            worksheet.write('D1', 'Date Range:', cell_format_b)
+            worksheet.set_column(1, 0, 18)
+            worksheet.write('E1', "-".join([date_range.split(" - ")[0].split("/")[1], date_range.split(" - ")[0].split("/")[0] , date_range.split(" - ")[0].split("/")[2]]))
+            worksheet.set_column(2, 0, 18)
+            worksheet.write('F1',"-".join([date_range.split(" - ")[-1].split("/")[1], date_range.split(" - ")[-1].split("/")[0] , date_range.split(" - ")[-1].split("/")[2]]))
+            worksheet.set_column(3, 0, 18)
+
+
+
+            worksheet.write(3, 0, "Name", cell_format_b)
+            worksheet.write(3, 1, "Sart Date", cell_format_b)
+            worksheet.write(3, 2, "End Date", cell_format_b)
+            worksheet.write(3, 3, "Amount Due", cell_format_b)
+            worksheet.write(3, 4, "Amount Paid", cell_format_b)
+            worksheet.write(3, 5, "Balance", cell_format_b)
+            row = 4
+            for i in owners_obj:
+                worksheet.write(row, 0, i.name)
+                worksheet.set_column(row, 0, 18)
+                worksheet.write(row, 1, i.start.strftime('%d-%m-%Y'))
+                worksheet.set_column(row, 1, 18)
+                worksheet.write(row, 2, i.end.strftime('%d-%m-%Y'))
+                worksheet.set_column(row, 2, 18)
+                worksheet.write(row, 3, i.amount_due)
+                worksheet.set_column(row, 3, 18)
+                worksheet.write(row, 4, i.amount_paid)
+                worksheet.set_column(row, 4, 18)
+                worksheet.write(row, 5, i.balance)
+                worksheet.set_column(row, 5, 18)
+                row += 1
+
+            workbook.close()
+
+            response = HttpResponse(content_type='application/vnd.ms-excel')
+
+            response['Content-Disposition'] = f'attachment;filename="owners.xlsx"'
+
+            response.write(output.getvalue())
+            return response
+
+
+    else:
+        owners_obj = owner.objects.all()
+
+        return render(request, 'owners.html', {'owners':owners_obj})
+
+@login_required(login_url="/login")
+def view_owner(request, owner_id):
+    update_obalance()
+    if request.method == "POST":
+        if permissions.objects.get(user=request.user.username).level5 == "Yes":
+            form = ownerDocsForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                return redirect('view_owner', owner_id=owner_id)
+            else:
+                print(form.errors)
+                messages.error(request, 'Please use correct data!')
+                return redirect('view_owner', owner_id=owner_id)
+        else:
+            return HttpResponse("Access Denied")
+    else:
+
+        owner_obj = owner.objects.all().filter(id=owner_id)
+
+        doc_obj = ownerDocs.objects.all().filter(owner_account_id=owner_id)
+
+
+        form = ownerDocsForm
+
+        return render(request, 'view_owner.html', {'owners':owner_obj, 'documents':doc_obj, 'form':form})
+
+@login_required(login_url="/login")
+def add_owner(request):
+    if permissions.objects.get(user=request.user.username).level5 == "Yes":
+        if(request.method) == "POST":
+
+
+            form = ownerForm(data=request.POST.copy())
+
+            if form.is_valid():
+                form.save()
+                return redirect(owners)
+            else:
+                print(form.errors)
+                messages.error(request, 'Please use correct data!')
+                return redirect(add_owner)
+
+        else:
+            form = ownerForm
+            return render(request, 'add_owner.html', {'form':form,})
+
+    else:
+        return HttpResponse("Access Denied")
+
+@login_required(login_url="/login")
+def edit_owner(request, owner_id):
+    if permissions.objects.get(user=request.user.username).level5 == "Yes":
+        update_obalance()
+
+        if(request.method) == "POST":
+            owner_i = owner.objects.all().filter(id=owner_id)[0]
+            updated_data = request.POST.copy()
+            form = ownerForm(data=updated_data, instance=owner_i)
+
+
+            if form.is_valid():
+                # print(form.errors)
+                form.save()
+                return redirect('view_owner', owner_id=owner_id)
+            else:
+                messages.error(request, 'Please use correct data!')
+                return redirect('edit_owner', owner_id=owner_id)
+
+        else:
+            form = ownerForm
+            owner_obj = owner.objects.get(id=owner_id)
+            return render(request, 'edit_owner.html', {'owner':owner_obj, 'form':form})
+    else:
+        return HttpResponse("Access Denied")
+
+@login_required(login_url="/login")
+def delete_owner(request, owner_id):
+
+    if request.user.is_superuser:
+        owner.objects.all().filter(id=owner_id)[0].delete()
+        try:
+            deletes.objects.get(link="delete_owner/"+str(owner_id)).delete()
+            return redirect(deletes_view)
+        except:
+            pass
+    else:
+        try:
+            deletes.objects.get(link="delete_owner/"+str(owner_id))
+        except:
+            deletes.objects.create(user=request.user.username, description="Delete owner with ID : "+str(owner_id), link="delete_owner/"+str(owner_id))
+
+    return redirect(owners)
+
+
+@login_required(login_url="/login")
+def delete_ownerDoc(request, ownerDoc_id):
+
+    ownerDoc_i = ownerDocs.objects.all().filter(id=ownerDoc_id)[0]
+    owner_id = ownerDoc_i.owner_account_id
+    if request.user.is_superuser:
+        ownerDoc_i.delete()
+        try:
+            deletes.objects.get(link="delete_ownerDoc/"+str(ownerDoc_id)).delete()
+            return redirect(deletes_view)
+        except:
+            pass
+    else:
+        try:
+            deletes.objects.get(link="delete_ownerDoc/"+str(ownerDoc_id))
+        except:
+            deletes.objects.create(user=request.user.username, description="Delete owner Document with name: "+ownerDocs.objects.get(id=ownerDoc_id).file_name, link="delete_ownerDoc/"+str(ownerDoc_id))
+    return redirect('view_owner', owner_id=owner_id)

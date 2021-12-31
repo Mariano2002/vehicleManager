@@ -53,3 +53,15 @@ class accountForm(forms.ModelForm):
     class Meta:
         model = account
         fields = ('date','rental_id', 'notes', 'description','value','payment_method','type','in_out')
+
+class ownerForm(forms.ModelForm):
+    class Meta:
+        model = owner
+        fields = ('name', 'start', 'end', 'amount_due', 'amount_paid',)
+
+
+class ownerDocsForm(forms.ModelForm):
+    class Meta:
+        model = ownerDocs
+        fields = ('owner_account_id', 'file_name', 'doc')
+

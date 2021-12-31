@@ -46,7 +46,7 @@ class driver(models.Model):
     phone = models.CharField(max_length=30, blank=True, )
     address = models.CharField(max_length=200, blank=True, )
     postcode = models.CharField(max_length=50, blank=True, )
-    license_number = models.IntegerField(blank=True, )
+    license_number = models.CharField(max_length=50, blank=True, )
     LN_expiration_date = models.DateField(max_length=100, blank=True, )
     NI = models.CharField(max_length=100, blank=True, )
     birth_date = models.DateField(max_length=100, blank=True, )
@@ -135,11 +135,12 @@ class permissions(models.Model):
     level2 = models.CharField(max_length=3, choices=yesno,)
     level3 = models.CharField(max_length=3, choices=yesno,)
     level4 = models.CharField(max_length=3, choices=yesno,)
+    level5 = models.CharField(max_length=3, choices=yesno,)
 
 
 
 class owner(models.Model):
-    name = models.CharField(max_length=100, blank=False, unique=True)
+    name = models.CharField(max_length=100, blank=False)
     start = models.DateField(max_length=100, blank=False, )
     end = models.DateField(max_length=100, blank=False, )
     amount_due = models.IntegerField(blank=False, )
